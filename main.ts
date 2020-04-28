@@ -8,6 +8,7 @@ sprites.onOverlap(SpriteKind.Ball, SpriteKind.Brick, function (sprite, otherSpri
     info.changeScoreBy(15)
     otherSprite.destroy(effects.disintegrate, 200)
     sprite.setVelocity(sprite.vx, -1 * sprite.vy)
+    numBricks += -1
 })
 sprites.onOverlap(SpriteKind.Ball, SpriteKind.Player, function (sprite, otherSprite) {
     sprite.setVelocity((sprite.x - otherSprite.x) * 3, -1 * sprite.vx)
@@ -17,6 +18,12 @@ sprites.onOverlap(SpriteKind.Ball, SpriteKind.Player, function (sprite, otherSpr
 })
 sprites.onOverlap(SpriteKind.Ball, SpriteKind.edge, function (sprite, otherSprite) {
     sprite.setVelocity(-2 * sprite.vx, sprite.vy)
+})
+controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
+    console.log(convertToText(numBricks))
+})
+sprites.onOverlap(SpriteKind.Ball, SpriteKind.Top, function (sprite, otherSprite) {
+    sprite.setVelocity(sprite.vx, -2 * sprite.vy)
 })
 function buildSetBricks () {
     for (let index = 0; index <= 6; index++) {
@@ -66,12 +73,11 @@ function createBrick (x: number, y: number) {
 `, SpriteKind.Brick)
         breakableBrick.setPosition(x, y)
     }
+    numBricks += 1
 }
-sprites.onOverlap(SpriteKind.Ball, SpriteKind.Top, function (sprite, otherSprite) {
-    sprite.setVelocity(sprite.vx, -2 * sprite.vy)
-})
 let breakableBrick: Sprite = null
 let randomNumber = 0
+let numBricks = 0
 let column = 0
 info.setScore(0)
 info.setLife(3)
@@ -426,6 +432,7 @@ let ballVar = sprites.create(img`
 . 1 1 1 1 1 . . 
 `, SpriteKind.Ball)
 column = 0
+numBricks = 0
 buildSetBricks()
 game.onUpdate(function () {
     if (startBallVar == 0) {
@@ -442,5 +449,16 @@ game.onUpdate(function () {
     if (ballVar.y > 115) {
         startBallVar = 0
         info.changeLifeBy(-1)
+    }
+})
+forever(function () {
+    if (numBricks <= 0) {
+        numBricks = 0
+        startBallVar = 0
+        effects.confetti.startScreenEffect()
+        pause(2000)
+        effects.confetti.endScreenEffect()
+        info.changeScoreBy(100)
+        buildSetBricks()
     }
 })
