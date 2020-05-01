@@ -33,7 +33,7 @@ sprites.onOverlap(SpriteKind.Ball, SpriteKind.Brick, function (sprite, otherSpri
 sprites.onOverlap(SpriteKind.Ball, SpriteKind.Player, function (sprite, otherSprite) {
     sprite.setVelocity((sprite.x - otherSprite.x) * 3, -1 * sprite.vy)
     if (sprite.vy >= -150) {
-        sprite.vy += 5
+        sprite.vy += 0
     }
 })
 sprites.onOverlap(SpriteKind.Ball, SpriteKind.LengthBuff, function (sprite, otherSprite) {
